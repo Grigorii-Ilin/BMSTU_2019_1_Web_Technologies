@@ -244,3 +244,104 @@ User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
   'accept-encoding': 'gzip, deflate',
   host: 'localhost:****',
   connection: 'Keep-Alive' }
+
+# Сервер должен содержать предоставлять API с поддержкой (GET, POST, DELETE, PUT, OPTION). Данные отправлять в формате json. Конкретное содержание запросов - на ваше усмотрение. Подключите фантазию. (Можно сделать простейший CRUD-сервис с хранением данных в RAM). #
+
+var express = require('express');
+var app = express();
+
+app.use(express.static('static'));
+
+bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
+
+var options = {
+root: './',
+dotfiles: 'deny',
+headers: {
+'x-timestamp': Date.now(),
+'x-sent': true
+}
+};
+
+app.get('/', function (req, res) {
+var fileName = "static/get.json"
+res.sendFile(fileName, options, function (err) {
+if (err) {
+console.log(err);
+res.status(err.status).end();
+}
+else {
+console.log('Sent:', fileName);
+}
+});
+})
+
+
+app.post('/', function (req, res) {
+console.log('body:', req.body);
+var fileName = ""
+
+if (req.body.id==='1') {
+fileName = "static/p_1.json"
+}
+if (req.body.id === '2') {
+fileName = "static/p_2.json"
+}
+if (req.body.id === '3') {
+fileName = "static/p_3.json"
+}
+
+res.sendFile(fileName, options, function (err) {
+if (err) {
+console.log(err);
+res.status(err.status).end();
+}
+else {
+console.log('Sent:', fileName);
+}
+});
+})
+
+
+app.put('/', function (req, res) {
+res.json(req.body);
+})
+
+
+app.delete('/', function (req, res) {
+var fileName = "static/del.json" 
+res.sendFile(fileName, options, function (err) {
+if (err) {
+console.log(err);
+res.status(err.status).end();
+}
+else {
+console.log('Sent:', fileName);
+}
+});
+})
+
+
+app.options('/', function (req, res) {
+var filename = "static/opt.json"
+res.sendFile(filename, options, function (err) {
+if (err) {
+console.log(err);
+res.status(err.status).end();
+}
+else {
+console.log('Sent:', filename);
+}
+});
+})
+
+
+var server = app.listen(8080, function () {
+var host = server.address().address
+var port = server.address().port
+console.log('Example app listening at http://%s:%s', host, port)
+});
+
+
+
